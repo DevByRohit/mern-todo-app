@@ -32,9 +32,9 @@ const TaskList = () => {
   const selectSingleTask = (id) => {
     if (selectedTask.includes(id)) {
       let remainingSelectedTask = selectedTask.filter((item) => item != id);
-      setSelectedTask(remainingSelectedTask);
+      setSelectedTask([remainingSelectedTask]);
     } else {
-      setSelectedTask(id, ...selectedTask);
+      setSelectedTask([id, ...selectedTask]);
     }
     console.log(id);
   };
@@ -50,9 +50,31 @@ const TaskList = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    console.log(selectedTask);
+    let deleteAll = await fetch("http://localhost:3000/delete-all", {
+      method: "delete",
+      body: JSON.stringify(selectedTask),
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    });
+
+    deleteAll = await deleteAll.json();
+    if (deleteAll.success) {
+      getListData();
+    }
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-4xl font-semibold text-center mb-6">Task List</h1>
+      <button
+        onClick={handleDeleteAll}
+        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+      >
+        Delete All
+      </button>
 
       <ul className="grid grid-cols-[100px_80px_1fr_2fr_180px] items-center">
         {/* Header */}

@@ -117,6 +117,24 @@ app.delete("/delete/:id", async (req, res) => {
   }
 });
 
+app.delete("/delete-all", async (req, res) => {
+  const db = await connection();
+  const ids = req.body;
+  const deleteTaskIds = ids.map((item) => new ObjectId(item));
+
+  const collection = await db.collection(collectionName);
+  const result = await collection.deleteMany({ _id: { $in: deleteTaskIds } });
+
+  if (result) {
+    res.send({
+      message: "task deleted successfully",
+      success: result,
+    });
+  } else {
+    res.send({ message: "error try after sometime", success: true });
+  }
+});
+
 // PORT
 const PORT = 3000;
 
