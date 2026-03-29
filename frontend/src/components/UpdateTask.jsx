@@ -26,7 +26,13 @@ const UpdateTask = () => {
   }, [id]);
 
   const getTask = async (id) => {
-    const res = await fetch(`http://localhost:3000/task/${id}`);
+    const res = await fetch(`http://localhost:3000/task/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "Application/Json",
+      },
+    });
     const data = await res.json();
 
     if (data.result) {
@@ -43,6 +49,7 @@ const UpdateTask = () => {
     let updatedTask = await fetch("http://localhost:3000/update-task", {
       method: "PUT",
       body: JSON.stringify(taskData),
+      credentials: "include",
       headers: {
         "Content-Type": "Application/Json",
       },
@@ -64,7 +71,7 @@ const UpdateTask = () => {
         method="post"
         className="border-2 border-gray-500 p-4 bg-blue-50 text-black font-semibold  text-xl rounded shadow-2xl flex flex-col gap-4 w-2xl"
       >
-        <h1 className="text-3xl text-center py-1 font-bold">Add New Task</h1>
+        <h1 className="text-3xl text-center py-1 font-bold">Update Existing Task</h1>
 
         <input
           type="text"

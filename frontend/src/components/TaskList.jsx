@@ -12,11 +12,19 @@ const TaskList = () => {
   }, []);
 
   const getListData = async () => {
-    let allTaskList = await fetch("http://localhost:3000/task-list");
-    allTaskList = await allTaskList.json();
+    let allTaskList = await fetch("http://localhost:3000/task-list", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "Application/Json",
+      },
+    });
 
+    allTaskList = await allTaskList.json();
     if (allTaskList.success) {
       setTaskData(allTaskList.result);
+    } else {
+      alert(allTaskList.message);
     }
   };
 
@@ -36,25 +44,27 @@ const TaskList = () => {
     } else {
       setSelectedTask([id, ...selectedTask]);
     }
-    console.log(id);
   };
 
   const handleDelete = async (id) => {
     let item = await fetch("http://localhost:3000/delete/" + id, {
       method: "delete",
+      credentials: "include",
     });
     item = await item.json();
 
     if (item.success) {
       getListData();
+    } else {
+      alert(item.message);
     }
   };
 
   const handleDeleteAll = async () => {
-    console.log(selectedTask);
     let deleteAll = await fetch("http://localhost:3000/delete-all", {
       method: "delete",
       body: JSON.stringify(selectedTask),
+      crredentials: "include",
       headers: {
         "Content-Type": "Application/json",
       },
@@ -63,6 +73,8 @@ const TaskList = () => {
     deleteAll = await deleteAll.json();
     if (deleteAll.success) {
       getListData();
+    } else {
+      alert(deleteAll.message);
     }
   };
 
@@ -71,7 +83,7 @@ const TaskList = () => {
       <h1 className="text-4xl font-semibold text-center mb-6">Task List</h1>
       <button
         onClick={handleDeleteAll}
-        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
+        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition mb-2"
       >
         Delete All
       </button>
@@ -85,7 +97,7 @@ const TaskList = () => {
             type="checkbox"
             name="checkBox"
             id="checkBox"
-            className="w-4 h-4"
+            className="w-5 h-5 cursor-pointer"
           />
         </li>
         <li className="border-2 border-gray-400 text-lg font-semibold text-center p-2 bg-gray-100">
@@ -112,7 +124,7 @@ const TaskList = () => {
                     checked={selectedTask.includes(item._id)}
                     type="checkbox"
                     name="checkBox"
-                    className="w-4 h-4"
+                    className="w-5 h-5 cursor-pointer"
                   />
                 </li>
 
@@ -129,13 +141,13 @@ const TaskList = () => {
                 <li className="border-2 flex gap-2 border-gray-300 text-center p-1">
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 transition"
+                    className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 transition cursor-pointer"
                   >
                     Delete
                   </button>
                   <Link
                     to={`/update/${item._id}`}
-                    className="bg-green-600 text-white px-4 py-1 rounded-md hover:bg-green-900 transition"
+                    className="bg-green-600 text-white px-4 py-1 rounded-md hover:bg-green-900 transition cursor-pointer"
                   >
                     Update
                   </Link>
